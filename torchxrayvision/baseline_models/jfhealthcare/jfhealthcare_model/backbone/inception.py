@@ -3,8 +3,9 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.utils.model_zoo as model_zoo
-from model.utils import get_norm
-
+from torchxrayvision.baseline_models.jfhealthcare.jfhealthcare_model.utils import (
+    get_norm,
+)
 __all__ = ['Inception3', 'inception_v3']
 
 

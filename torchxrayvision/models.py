@@ -382,7 +382,7 @@ class ResNet(nn.Module):
     ]
     """"""
 
-    def __init__(self, weights: str = None, apply_sigmoid: bool = False):
+    def __init__(self, weights: str = None, apply_sigmoid: bool = False, use_op_threshs: bool = True):
         super(ResNet, self).__init__()
 
         self.weights = weights
@@ -413,7 +413,9 @@ class ResNet(nn.Module):
             print("Loading failure. Check weights file:", self.weights_filename_local)
             raise e
 
-        if "op_threshs" in model_urls[weights]:
+        self.use_op_threshs = use_op_threshs
+        
+        if "op_threshs" in model_urls[weights] and self.use_op_threshs:
             self.register_buffer('op_threshs', torch.tensor(model_urls[weights]["op_threshs"]))
 
         self.upsample = nn.Upsample(size=(512, 512), mode='bilinear', align_corners=False)
@@ -453,7 +455,7 @@ class ResNet(nn.Module):
         if hasattr(self, 'apply_sigmoid') and self.apply_sigmoid:
             out = torch.sigmoid(out)
 
-        if hasattr(self, "op_threshs") and (self.op_threshs != None):
+        if hasattr(self, "op_threshs") and (self.op_threshs != None) and self.use_op_threshs:
             out = torch.sigmoid(out)
             out = op_norm(out, self.op_threshs)
         return out

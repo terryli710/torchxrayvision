@@ -1068,14 +1068,18 @@ class PC_Dataset(Dataset):
 
     def __len__(self):
         return len(self.labels)
+    
+    def _get_imgpath(self, idx):
+        imgid = self.csv["ImageID"].iloc[idx]
+        img_path = os.path.join(self.imgpath, imgid)
+        return img_path
 
     def __getitem__(self, idx):
         sample = {}
         sample["idx"] = idx
         sample["lab"] = self.labels[idx]
 
-        imgid = self.csv["ImageID"].iloc[idx]
-        img_path = os.path.join(self.imgpath, imgid)
+        img_path = self._get_imgpath(idx)
         img = imread(img_path)
 
         sample["img"] = normalize(img, maxval=65535, reshape=True)

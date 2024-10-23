@@ -45,10 +45,10 @@ def download(url: str, filename: str):
 def normalize(img, maxval, reshape=False):
     """Scales images to be roughly [-1024 1024]."""
 
-    if img.max() > maxval:
-        raise Exception("max image value ({}) higher than expected bound ({}).".format(img.max(), maxval))
-
-    img = (2 * (img.astype(np.float32) / maxval) - 1.) * 1024
+    if img.max() <= maxval:
+        img = (2 * (img.astype(np.float32) / maxval) - 1.) * 1024
+    else:
+        img = img.astype(np.float32)
 
     if reshape:
         # Check that images are 2D arrays
